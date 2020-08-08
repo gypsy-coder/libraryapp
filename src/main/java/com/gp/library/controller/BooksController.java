@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -53,7 +55,7 @@ public class BooksController {
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> saveBook(@RequestBody BooksDto booksDto){
+    public ResponseEntity<String> saveBook(@RequestBody @Valid BooksDto booksDto){
         try{
             this.booksService.saveBook(booksDto);
             return ResponseEntity.status(HttpStatus.OK).build();

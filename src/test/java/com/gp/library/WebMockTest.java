@@ -2,7 +2,6 @@ package com.gp.library;
 
 import com.gp.library.controller.BooksController;
 import com.gp.library.model.dto.BooksDto;
-import com.gp.library.model.dto.LibrariesDto;
 import com.gp.library.service.BooksService;
 import com.gp.library.service.LibrariesService;
 import org.junit.jupiter.api.Test;
@@ -32,18 +31,25 @@ public class WebMockTest {
     private LibrariesService librariesService;
 
     @Test
-    public void testingGetAllService() throws Exception{
-        List<BooksDto> booksDtoList = new ArrayList<BooksDto>();
+    public void testingGetAllBooksService() throws Exception{
+        List<BooksDto> booksDtoList = new ArrayList<>();
+        BooksDto booksDto = new BooksDto(BooksDto.Builder.builder().setBookId(1).setBookName("Test").setAuthor("Author").setLibraryId(1));
+        booksDtoList.add(booksDto);
         when(bookService.getAllBooks()).thenReturn(booksDtoList);
 
         this.mockMvc.perform(get("/books/all")).andDo(print()).andExpect(status().isOk());
     }
 
-    @Test
-    public void testingGetAllLibraries() throws Exception{
-        List<LibrariesDto> librariesDtoList = new ArrayList<LibrariesDto>();
-        when(librariesService.getAllLibraries()).thenReturn(librariesDtoList);
-
-        this.mockMvc.perform(get("/libraries/all")).andDo(print()).andExpect(status().isOk());
-    }
+//    @Test
+//    public void testingGetAllLibraries() throws Exception{
+//        LibrariesDto librariesDto = new LibrariesDto();
+//        List<LibrariesDto> librariesDtoList = new ArrayList<>();
+//        librariesDtoList.add(librariesDto);
+//        when(librariesService.getAllLibraries()).thenReturn(librariesDtoList);
+//
+//        this.mockMvc.perform(get("/libraries/all"))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//                //.andExpect(jsonPath("$[0].libraryName", is(librariesDto.getLibraryName())));
+//    }
 }

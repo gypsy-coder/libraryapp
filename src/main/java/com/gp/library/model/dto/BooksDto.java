@@ -2,10 +2,13 @@ package com.gp.library.model.dto;
 
 import com.gp.library.model.dao.BooksDao;
 
+import javax.validation.constraints.NotNull;
+
 public class BooksDto {
 
     private int bookId;
 
+    @NotNull(message = "Book name mandatory!")
     private String bookName;
 
     private String author;

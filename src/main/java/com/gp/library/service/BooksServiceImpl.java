@@ -1,5 +1,7 @@
 package com.gp.library.service;
 
+import com.gp.library.exception.BookNotFoundException;
+import com.gp.library.exception.NoDataFoundException;
 import com.gp.library.model.dao.BooksDao;
 import com.gp.library.model.dao.LibrariesDao;
 import com.gp.library.model.dto.BooksDto;
@@ -9,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +30,7 @@ public class BooksServiceImpl implements BooksService{
 
     @Override
     public BooksDto getBookById(Integer id) {
-        return new BooksDto(this.booksRepository.findById(id).get());
+        return new BooksDto(this.booksRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id)));
     }
 
     @Override
@@ -58,17 +59,18 @@ public class BooksServiceImpl implements BooksService{
     @Override
     public void updateBook(Integer id, BooksDto booksDto) {
         if(id == booksDto.getLibraryId()) {
-            Optional<BooksDao> booksDao = this.booksRepository.findById(id);
-            if(booksDao.isPresent()){
-                this.booksRepository.delete(booksDao.get());
+            BooksDao booksDao = this.booksRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
+                this.booksRepository.delete(booksDao);
                 this.booksRepository.save(new BooksDao(booksDto));
-            }
         }
     }
 
     @Override
     public List<BooksDto> getBooksByLibraryId(Integer id) {
         List<BooksDao> booksDaoList = this.booksRepository.getBooksByLibraryId(id);
+        if(booksDaoList.isEmpty()){
+            throw new NoDataFoundException();
+        }
         return booksDaoList.stream().map(BooksDto::new).collect(Collectors.toList());
     }
 }
